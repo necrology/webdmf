@@ -1,21 +1,149 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-6 relative">
-    <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Daftar Users</h1>
+  <div class="min-h-screen bg-gray-100 relative">
+    <h1 class="text-2xl font-bold mb-6">Data User</h1>
 
-    <!-- Notifikasi -->
-    <div
-      v-if="notifMessage"
-      :class="notifType === 'success' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'"
-      class="mb-4 px-4 py-2 rounded"
-    >
-      {{ notifMessage }}
-    </div>
+    <!-- Notifikasi Popup -->
+    <transition name="fade">
+      <div
+        v-if="notifMessage"
+        @click="clearNotif"
+        :class="[
+          notifType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white',
+          'fixed top-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-lg cursor-pointer z-50 select-none',
+          'max-w-xs',
+          'drop-shadow-lg',
+        ]"
+      >
+        <svg
+          v-if="notifType === 'success'"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <span class="flex-grow">{{ notifMessage }}</span>
+        <button @click.stop="clearNotif" aria-label="Close" class="ml-2 focus:outline-none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </transition>
 
-    <!-- Tombol Tambah -->
-    <div class="mb-4">
-      <button @click="showModal = true" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-        + Tambah User
-      </button>
+    <!-- Card Pembungkus -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <!-- Header card: kontrol pencarian dan tombol tambah -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div class="flex items-center gap-3 w-full md:w-2/3">
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Cari data..."
+            class="flex-grow px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <div class="flex items-center gap-2">
+            <label class="text-gray-700">Tampilkan</label>
+            <select
+              v-model.number="perPage"
+              class="px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tombol Tambah dipindahkan kanan -->
+        <div class="w-full md:w-auto flex justify-end">
+          <button @click="showModal = true" class="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600">
+            + Tambah User
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabel -->
+      <div v-if="loading" class="text-center text-gray-600 py-10">Loading data...</div>
+      <div v-else-if="error" class="text-center text-red-500 py-10">Error: {{ error }}</div>
+      <div v-else class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="min-w-full table-auto border-collapse">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th class="px-4 py-3 text-left">Nama</th>
+              <th class="px-4 py-3 text-left">Email</th>
+              <th class="px-4 py-3 text-left">No HP</th>
+              <th class="px-4 py-3 text-left">Alamat</th>
+              <th class="px-4 py-3 text-left">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in paginatedUsers" :key="user.user_id" class="border-b hover:bg-gray-50">
+              <td class="px-4 py-2">{{ user.name }}</td>
+              <td class="px-4 py-2">{{ user.email }}</td>
+              <td class="px-4 py-2">{{ user.no_hp }}</td>
+              <td class="px-4 py-2">{{ user.alamat }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">
+                <button
+                  @click="editUser(user)"
+                  class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2"
+                >
+                  Edit
+                </button>
+                <button
+                  @click="deleteUser(user.user_id)"
+                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+            <tr v-if="paginatedUsers.length === 0">
+              <td colspan="5" class="text-center text-gray-500 py-4">Data tidak ditemukan.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-6 flex justify-center items-center gap-4">
+        <button
+          @click="currentPage--"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+        >
+          ← Prev
+        </button>
+        <span class="text-gray-700">Halaman {{ currentPage }} dari {{ totalPages }}</span>
+        <button
+          @click="currentPage++"
+          :disabled="currentPage === totalPages"
+          class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+        >
+          Next →
+        </button>
+      </div>
     </div>
 
     <!-- Modal Form Tambah / Edit -->
@@ -59,88 +187,6 @@
           </div>
         </form>
       </div>
-    </div>
-
-    <!-- Kontrol Pencarian dan Per Page -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Cari data..."
-        class="w-full md:w-1/3 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <div>
-        <label class="mr-2 text-gray-700">Tampilkan</label>
-        <select
-          v-model.number="perPage"
-          class="px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option :value="5">5</option>
-          <option :value="10">10</option>
-          <option :value="20">20</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Tabel -->
-    <div v-if="loading" class="text-center text-gray-600">Loading data...</div>
-    <div v-else-if="error" class="text-center text-red-500">Error: {{ error }}</div>
-    <div v-else class="overflow-x-auto bg-white shadow-md rounded-lg">
-      <table class="min-w-full table-auto">
-        <thead class="bg-blue-600 text-white">
-          <tr>
-            <th class="px-4 py-3 text-left">Nama</th>
-            <th class="px-4 py-3 text-left">Email</th>
-            <th class="px-4 py-3 text-left">No HP</th>
-            <th class="px-4 py-3 text-left">Alamat</th>
-            <th class="px-4 py-3 text-left">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in paginatedUsers" :key="user.user_id" class="border-b hover:bg-gray-100">
-            <td class="px-4 py-2">{{ user.name }}</td>
-            <td class="px-4 py-2">{{ user.email }}</td>
-            <td class="px-4 py-2">{{ user.no_hp }}</td>
-            <td class="px-4 py-2">{{ user.alamat }}</td>
-            <td class="px-4 py-2">
-              <button
-                @click="editUser(user)"
-                class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2"
-              >
-                Edit
-              </button>
-              <button
-                @click="deleteUser(user.user_id)"
-                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Hapus
-              </button>
-            </td>
-          </tr>
-          <tr v-if="paginatedUsers.length === 0">
-            <td colspan="5" class="text-center text-gray-500 py-4">Data tidak ditemukan.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="mt-4 flex justify-center items-center gap-2">
-      <button
-        @click="currentPage--"
-        :disabled="currentPage === 1"
-        class="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        ← Prev
-      </button>
-      <span class="text-gray-700">Halaman {{ currentPage }} dari {{ totalPages }}</span>
-      <button
-        @click="currentPage++"
-        :disabled="currentPage === totalPages"
-        class="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        Next →
-      </button>
     </div>
   </div>
 </template>
@@ -189,6 +235,30 @@ const paginatedUsers = computed(() => {
 watch([searchQuery, perPage], () => {
   currentPage.value = 1;
 });
+
+let notifTimeout = null;
+
+function setNotif(type, message) {
+  notifType.value = type;
+  notifMessage.value = message;
+
+  // Clear timeout if already running
+  if (notifTimeout) clearTimeout(notifTimeout);
+
+  // Auto hide notif after 4 seconds
+  notifTimeout = setTimeout(() => {
+    notifMessage.value = "";
+    notifTimeout = null;
+  }, 4000);
+}
+
+function clearNotif() {
+  notifMessage.value = "";
+  if (notifTimeout) {
+    clearTimeout(notifTimeout);
+    notifTimeout = null;
+  }
+}
 
 async function fetchUsers() {
   loading.value = true;
@@ -267,19 +337,16 @@ async function submitUser() {
     const data = await response.json();
 
     if (!response.ok) {
-      notifType.value = "error";
-      notifMessage.value = data.error || "Gagal menyimpan data.";
+      setNotif("error", data.error || "Gagal menyimpan data.");
       return;
     }
 
-    notifType.value = "success";
-    notifMessage.value = isEdit.value ? "User berhasil diupdate." : "User berhasil disimpan.";
+    setNotif("success", isEdit.value ? "User berhasil diupdate." : "User berhasil disimpan.");
     showModal.value = false;
     await fetchUsers();
     resetForm();
   } catch (err) {
-    notifType.value = "error";
-    notifMessage.value = err.message;
+    setNotif("error", err.message);
   }
 }
 
@@ -294,11 +361,9 @@ async function deleteUser(id) {
     if (!response.ok) throw new Error(`Gagal menghapus user, status: ${response.status}`);
 
     await fetchUsers();
-    notifType.value = "success";
-    notifMessage.value = "User berhasil dihapus.";
+    setNotif("success", "User berhasil dihapus.");
   } catch (err) {
-    notifType.value = "error";
-    notifMessage.value = `Error hapus user: ${err.message}`;
+    setNotif("error", `Error hapus user: ${err.message}`);
   }
 }
 
@@ -310,5 +375,15 @@ onMounted(() => {
 <style scoped>
 .backdrop-blur-sm {
   backdrop-filter: blur(6px);
+}
+
+/* Animasi fade untuk transisi notifikasi */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

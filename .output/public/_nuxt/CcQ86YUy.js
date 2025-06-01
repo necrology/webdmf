@@ -1,0 +1,1 @@
+import{c as t,a as e,o as l}from"./CAm5wNBU.js";const n={__name:"profile",setup(o){return(r,a)=>(l(),t("div",null,a[0]||(a[0]=[e("h1",{class:"text-2xl font-bold mb-4"},"Profile",-1),e("p",{class:"text-gray-600"},"Ini adalah halaman Profile.",-1)])))}};export{n as default};

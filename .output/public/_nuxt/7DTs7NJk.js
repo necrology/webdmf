@@ -1,0 +1,1 @@
+import{u as a}from"./C6ZcA8tg.js";const c=()=>{const e=a("user",()=>null);return{user:e,fetchSession:async()=>{try{const t=await fetch("http://localhost:8888/me",{credentials:"include"});if(t.ok){const s=await t.json();e.value=s.user}else e.value=null}catch{e.value=null}}}};export{c as u};

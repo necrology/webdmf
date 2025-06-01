@@ -4,3 +4,9 @@
     <p class="text-gray-600">Ini adalah halaman Profile.</p>
   </div>
 </template>
+
+<script setup>
+definePageMeta({
+  middleware: ["auth"],
+});
+</script>

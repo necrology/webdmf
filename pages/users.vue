@@ -194,6 +194,10 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const users = ref([]);
 const loading = ref(false);
 const error = ref(null);

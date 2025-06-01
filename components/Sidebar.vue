@@ -6,7 +6,7 @@
     ]"
   >
     <div class="flex items-center justify-between p-4 border-b border-gray-700">
-      <span v-if="!isCollapsed" class="text-lg font-semibold">WEBDMF</span>
+      <span v-if="!isCollapsed" class="text-lg font-semibold">LMS Sesko AU</span>
       <button
         @click="isCollapsed = !isCollapsed"
         class="p-1 rounded hover:bg-gray-700 focus:outline-none"
@@ -47,7 +47,7 @@ const route = useRoute();
 const isCollapsed = ref(true);
 
 const menuItems = [
-  { name: "Dashboard", to: "/", icon: HomeIcon },
+  { name: "Dashboard", to: "/dashboard", icon: HomeIcon },
   { name: "Users", to: "/users", icon: UserIcon },
   { name: "Settings", to: "/settings", icon: Cog6ToothIcon },
 ];

@@ -400,13 +400,13 @@ const _routes = [
     name: "index",
     path: "/",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": ["guest"] } },
-    component: () => import('./index-BQeRenT7.mjs')
+    component: () => import('./index-BefRroY6.mjs')
   },
   {
     name: "users",
     path: "/users",
     meta: { "middleware": ["auth"] },
-    component: () => import('./users-CkF8P8QV.mjs')
+    component: () => import('./users-CPOg-uQc.mjs')
   },
   {
     name: "profile",
@@ -430,13 +430,13 @@ const _routes = [
     name: "dosen-landingMenuDosen",
     path: "/dosen/landingMenuDosen",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": ["auth"] } },
-    component: () => import('./landingMenuDosen-BSvk98bP.mjs')
+    component: () => import('./landingMenuDosen-AG_0Burt.mjs')
   },
   {
     name: "siswa-landingMenuSiswa",
     path: "/siswa/landingMenuSiswa",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": ["auth"] } },
-    component: () => import('./landingMenuSiswa-BYt8AgY0.mjs')
+    component: () => import('./landingMenuSiswa-pr1dg4j_.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -802,7 +802,7 @@ const plugins = [
   components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-D8dY6agf.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-Bvz_7Ua5.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",

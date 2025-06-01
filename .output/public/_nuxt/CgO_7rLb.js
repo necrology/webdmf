@@ -1,0 +1,1 @@
+import{u}from"./P0UkXwgc.js";const c=()=>{const e=u("user",()=>null);return{user:e,fetchSession:async()=>{try{const t=await fetch("http://103.127.99.152:8888/me",{credentials:"include"});if(t.ok){const s=await t.json();e.value=s.user}else e.value=null}catch{e.value=null}}}};export{c as u};

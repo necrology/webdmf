@@ -268,7 +268,7 @@ async function fetchUsers() {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch("http://localhost:8888/users");
+    const response = await fetch("http://103.127.99.152:8888/users");
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
     users.value = data ?? [];
@@ -314,7 +314,7 @@ function editUser(user) {
 
 async function submitUser() {
   try {
-    let url = "http://localhost:8888/users";
+    let url = "http://103.127.99.152:8888/users";
     let method = "POST";
 
     if (isEdit.value && editUserId.value) {
@@ -358,7 +358,7 @@ async function deleteUser(id) {
   if (!confirm("Yakin ingin menghapus user ini?")) return;
 
   try {
-    const response = await fetch(`http://localhost:8888/users/${id}`, {
+    const response = await fetch(`http://103.127.99.152:8888/users/${id}`, {
       method: "DELETE",
     });
 

@@ -1,1 +1,0 @@
-import{c as a,a as t,o}from"./CAm5wNBU.js";const r={__name:"dashboard",setup(s){return(l,e)=>(o(),a("div",null,e[0]||(e[0]=[t("h1",{class:"text-2xl font-bold mb-4"},"Welcome to the Admin Panel",-1),t("p",null,"This is the dashboard.",-1)])))}};export{r as default};

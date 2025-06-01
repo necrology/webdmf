@@ -1,1 +1,0 @@
-import{c as e,a,o as s}from"./CAm5wNBU.js";const r={__name:"settings",setup(n){return(l,t)=>(s(),e("div",null,t[0]||(t[0]=[a("h1",{class:"text-2xl font-bold mb-4"},"Settings",-1),a("p",{class:"text-gray-600"},"Ini adalah halaman Settings.",-1)])))}};export{r as default};

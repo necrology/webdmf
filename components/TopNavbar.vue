@@ -34,7 +34,7 @@ const confirmLogout = async () => {
   if (!confirmed) return;
 
   try {
-    await fetch("http://localhost:8888/logout", {
+    await fetch("http://103.127.99.152:8888/logout", {
       method: "POST",
       credentials: "include",
     });
